@@ -5,26 +5,28 @@ from db import db
 
 parser = reqparse.RequestParser()
 parser.add_argument(
-    "first_name",
+    "firstName",
     type=str,
     required=True,
     location="json",
     help="Person's first name, cannot be blank",
 )
 parser.add_argument(
-    "last_name",
+    "lastName",
     type=str,
     required=True,
     location="json",
     help="Person's last name, cannot be blank",
 )
+parser.add_argument("email", type=str, required=True, location="json")
 
 
-users = {1: {"first_name": "Max", "last_name": "Krieg"}}
-
-
-def abort_if_user_not_exists(user_id):
-    if user_id not in users:
+def get_user_or_404(user_id):
+    try:
+        user = db.session.query(User).filter(User.id == user_id).one()
+        return user
+    except Exception as e:
+        print("Error getting user {}: {}".format(user_id, str(e)))
         abort(404, message="User {} does not exist".format(user_id))
 
 
@@ -43,24 +45,27 @@ class UsersResource(Resource):
 
     def post(self):
         user_data = parser.parse_args(strict=True)
-        user_ids = sorted(list(users.keys()))
-        new_user_id = user_ids[-1] + 1
-        users[new_user_id] = user_data
-        return new_user_id
+        new_user = User(
+            email=user_data.email,
+            first_name=user_data.firstName,
+            last_name=user_data.lastName,
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        return new_user.id
 
 
 class UserResource(Resource):
     def get(self, user_id):
-        abort_if_user_not_exists(user_id)
-        return {user_id: users[user_id]}
-
-    def put(self, user_id):
-        abort_if_user_not_exists(user_id)
-        user_data = parser.parse_args(strict=True)
-        users[user_id] = user_data
-        return users[user_id]
+        user = get_user_or_404(user_id)
+        return {
+            "email": user.email,
+            "firstName": user.first_name,
+            "lastName": user.last_name,
+        }
 
     def delete(self, user_id):
-        abort_if_user_not_exists(user_id)
-        del users[user_id]
+        user = get_user_or_404(user_id)
+        db.session.delete(user)
+        db.session.commit()
         return "", 204
