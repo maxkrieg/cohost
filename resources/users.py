@@ -1,7 +1,7 @@
 from flask_restful import Resource, abort, reqparse
 
-# from models.user import User
-# from db import db
+from models.user import User
+from db import db
 
 parser = reqparse.RequestParser()
 parser.add_argument(
@@ -30,8 +30,16 @@ def abort_if_user_not_exists(user_id):
 
 class UsersResource(Resource):
     def get(self):
-        # users = db.session.query(Users).all()
-        return users
+        users = db.session.query(User).all()
+        response = [
+            {
+                "email": user.email,
+                "firstName": user.first_name,
+                "lastName": user.last_name,
+            }
+            for user in users
+        ]
+        return response
 
     def post(self):
         user_data = parser.parse_args(strict=True)

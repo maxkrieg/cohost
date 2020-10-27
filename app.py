@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from resources.users import UsersResource, UserResource
+from resources.events import EventsResource
 from db import db
 
 
@@ -16,6 +17,7 @@ def create_app():
     api = Api(app)
     api.add_resource(UsersResource, "/users")
     api.add_resource(UserResource, "/users/<int:user_id>")
+    api.add_resource(EventsResource, "/users/<int:user_id>/events")
     db.init_app(app)
 
     return app
