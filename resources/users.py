@@ -1,24 +1,8 @@
-from flask_restful import Resource, abort, reqparse
+from flask_restful import Resource, abort
+
 
 from models.user import User
 from db import db
-
-parser = reqparse.RequestParser()
-parser.add_argument(
-    "firstName",
-    type=str,
-    required=True,
-    location="json",
-    help="Person's first name, cannot be blank",
-)
-parser.add_argument(
-    "lastName",
-    type=str,
-    required=True,
-    location="json",
-    help="Person's last name, cannot be blank",
-)
-parser.add_argument("email", type=str, required=True, location="json")
 
 
 def get_user_or_404(user_id):
@@ -30,7 +14,7 @@ def get_user_or_404(user_id):
         abort(404, message="User {} does not exist".format(user_id))
 
 
-class UsersResource(Resource):
+class UsersApi(Resource):
     def get(self):
         users = db.session.query(User).all()
         response = [
@@ -43,19 +27,8 @@ class UsersResource(Resource):
         ]
         return response
 
-    def post(self):
-        user_data = parser.parse_args(strict=True)
-        new_user = User(
-            email=user_data.email,
-            first_name=user_data.firstName,
-            last_name=user_data.lastName,
-        )
-        db.session.add(new_user)
-        db.session.commit()
-        return new_user.id
 
-
-class UserResource(Resource):
+class UserApi(Resource):
     def get(self, user_id):
         user = get_user_or_404(user_id)
         return {

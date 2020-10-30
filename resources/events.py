@@ -4,7 +4,7 @@ from models.event import Event
 from db import db
 
 
-class EventsResource(Resource):
+class EventsApi(Resource):
     def get(self, user_id):
         events = db.session.query(Event).filter(Event.user_id == user_id).all()
         response = [

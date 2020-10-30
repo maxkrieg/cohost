@@ -1,5 +1,6 @@
 from datetime import datetime
 from db import db
+from flask_bcrypt import generate_password_hash, check_password_hash
 
 
 class User(db.Model):
@@ -9,8 +10,15 @@ class User(db.Model):
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    password = db.Column(db.String(80), required=True)
 
     events = db.relationship("Event", backref="users", lazy=True)
+
+    def hash_password(self):
+        self.password = generate_password_hash(self.password).decode("utf8")
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
     def __repr__(self):
         return "<User: id={}, email={}, date_created={}>".format(
