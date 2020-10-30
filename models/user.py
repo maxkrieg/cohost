@@ -10,15 +10,15 @@ class User(db.Model):
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.now())
-    password = db.Column(db.String(80), required=True)
+    password_hash = db.Column(db.String(128), nullable=False)
 
     events = db.relationship("Event", backref="users", lazy=True)
 
     def hash_password(self):
-        self.password = generate_password_hash(self.password).decode("utf8")
+        self.password_hash = generate_password_hash(self.password_hash).decode("utf8")
 
     def check_password(self, password):
-        return check_password_hash(self.password, password)
+        return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
         return "<User: id={}, email={}, date_created={}>".format(

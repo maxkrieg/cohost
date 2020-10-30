@@ -1,5 +1,5 @@
 from flask_restful import Resource, abort
-
+from flask_jwt_extended import jwt_required
 
 from models.user import User
 from db import db
@@ -15,6 +15,7 @@ def get_user_or_404(user_id):
 
 
 class UsersApi(Resource):
+    @jwt_required
     def get(self):
         users = db.session.query(User).all()
         response = [
