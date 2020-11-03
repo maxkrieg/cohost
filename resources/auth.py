@@ -32,6 +32,7 @@ class SignupApi(Resource):
             last_name=user_data.lastName,
             password_hash=user_data.password,
         )
+        new_user.validate_password()
         new_user.hash_password()
         db.session.add(new_user)
         db.session.commit()
