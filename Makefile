@@ -4,4 +4,4 @@ run:
 
 .PHONY: resetdb
 resetdb:
-	python resetdb.py
+	ENV_FILE_LOCATION=./.env.py python resetdb.py
