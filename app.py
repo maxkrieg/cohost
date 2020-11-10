@@ -18,7 +18,7 @@ def create_app():
     api = Api(app, errors=errors)
     api.add_resource(UsersApi, "/users")
     api.add_resource(UserApi, "/users/<int:user_id>")
-    api.add_resource(EventsApi, "/events")
+    api.add_resource(EventsApi, "/users/<int:user_id>/events")
     api.add_resource(SignupApi, "/auth/signup")
     api.add_resource(LoginApi, "/auth/login")
     db.init_app(app)

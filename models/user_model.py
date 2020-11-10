@@ -4,16 +4,19 @@ from flask_bcrypt import generate_password_hash, check_password_hash
 from db import db
 
 
-class User(db.Model):
+class UserModel(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(80), unique=True, nullable=False)
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    modified_at = db.Column(
+        db.DateTime, default=datetime.now(), onupdate=datetime.now()
+    )
     password = db.Column(db.String(128), nullable=False)
 
-    events = db.relationship("Event", backref="users", lazy=True)
+    events = db.relationship("EventModel", backref="users", lazy=True)
 
     def hash_password(self):
         self.password = generate_password_hash(self.password).decode("utf8")

@@ -1,20 +1,12 @@
-import re
-from marshmallow import Schema, fields, validates, ValidationError
+from marshmallow import Schema, fields, validates, ValidationError, validate
 
 
-class SignupDataSchema(Schema):
+class UserSchema(Schema):
     id = fields.Int(dump_only=True)
-    email = fields.Str(required=True)
+    email = fields.Str(required=True, validate=validate.Email())
     first_name = fields.Str(required=True, data_key="firstName")
     last_name = fields.Str(required=True, data_key="lastName")
     password = fields.Str(required=True, load_only=True)
-
-    @validates("email")
-    def validate_email(self, email):
-        email_regex = "^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$"
-        is_valid = re.match(email_regex, email)
-        if not is_valid:
-            raise ValidationError(field_name="email", message="Bad email format")
 
     @validates("password")
     def validate_password(self, password):
@@ -38,8 +30,3 @@ class SignupDataSchema(Schema):
 
         if len(error_messages) > 0:
             raise ValidationError(", ".join(error_messages))
-
-
-class LoginDataSchema(Schema):
-    email = fields.Str(required=True)
-    password = fields.Str(required=True, load_only=True)
