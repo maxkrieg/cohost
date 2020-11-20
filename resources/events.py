@@ -1,21 +1,28 @@
 from flask_restful import Resource, abort
 from flask import request
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from marshmallow import ValidationError
 
 from models.event_model import EventModel
 from schema.event_schema import EventSchema
+from .services.user_service import get_user_or_404
 from db import db
 
 
 class EventsApi(Resource):
-    def get(self, user_id):
+    @jwt_required
+    def get(self):
+        user_id = get_jwt_identity()
         events = (
             db.session.query(EventModel).filter(EventModel.user_id == user_id).all()
         )
         response = EventSchema(many=True).dump(events)
         return response
 
-    def post(self, user_id):
+    @jwt_required
+    def post(self):
+        user_id = get_jwt_identity()
+        user = get_user_or_404(user_id)
         try:
             event_data = EventSchema().load(request.get_json())
         except ValidationError as e:
@@ -25,8 +32,11 @@ class EventsApi(Resource):
                 status=400,
                 errors=e.messages,
             )
-        new_event = EventModel(**event_data, user_id=user_id)
-        db.session.add(new_event)
+
+        new_event = EventModel(**event_data)
+        user.events.append(new_event)
         db.session.commit()
-        response = EventSchema().dump(new_event)
+
+        response = EventSchema(many=True).dump(user.events)
+
         return response

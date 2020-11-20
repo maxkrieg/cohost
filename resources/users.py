@@ -1,18 +1,9 @@
-from flask_restful import Resource, abort
-from sqlalchemy.orm.exc import NoResultFound
+from flask_restful import Resource
 
 from models.user_model import UserModel
 from schema.user_schema import UserSchema
+from .services.user_service import get_user_or_404
 from db import db
-
-
-def get_user_or_404(user_id):
-    try:
-        user = db.session.query(UserModel).filter(UserModel.id == user_id).one()
-        return user
-    except NoResultFound as e:
-        print("Error getting user {}: {}".format(user_id, str(e)))
-        abort(404, message="User {} does not exist".format(user_id))
 
 
 # TODO: Wrap these endpoints with an admin decorator
