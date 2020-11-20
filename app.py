@@ -17,7 +17,7 @@ def create_app():
     JWTManager(app)
     api = Api(app, errors=errors)
     api.add_resource(UsersApi, "/admin/users")
-    api.add_resource(UserApi, "/admin/users/<int:user_id>")
+    api.add_resource(UserApi, "/admin/users/<int:user_handle>")
     api.add_resource(EventsApi, "/events")
     api.add_resource(SignupApi, "/auth/signup")
     api.add_resource(LoginApi, "/auth/login")

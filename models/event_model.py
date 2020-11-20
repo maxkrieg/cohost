@@ -9,11 +9,12 @@ class EventModel(db.Model):
     address = db.Column(db.String(200))
     timestamp = db.Column(db.DateTime, nullable=False)
     google_maps_place_id = db.Column(db.String())
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now())
     modified_at = db.Column(
         db.DateTime, default=datetime.now(), onupdate=datetime.now()
     )
+
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
     def __repr__(self):
         return "<Event: id={}, title={}, user_id={}>".format(

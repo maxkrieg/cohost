@@ -1,5 +1,7 @@
 from datetime import datetime
 from flask_bcrypt import generate_password_hash, check_password_hash
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
 
 from db import db
 
@@ -7,6 +9,12 @@ from db import db
 class UserModel(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
+    handle = db.Column(
+        UUID(as_uuid=True),
+        default=uuid.uuid4,
+        unique=True,
+        nullable=False,
+    )
     email = db.Column(db.String(80), unique=True, nullable=False)
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)

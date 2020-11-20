@@ -15,13 +15,13 @@ class UsersApi(Resource):
 
 
 class UserApi(Resource):
-    def get(self, user_id):
-        user = get_user_or_404(user_id)
+    def get(self, user_handle):
+        user = get_user_or_404(user_handle)
         response = UserSchema().dump(user)
         return response
 
-    def delete(self, user_id):
-        user = get_user_or_404(user_id)
+    def delete(self, user_handle):
+        user = get_user_or_404(user_handle)
         db.session.delete(user)
         db.session.commit()
         return "", 204

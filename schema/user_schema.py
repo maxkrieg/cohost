@@ -2,7 +2,7 @@ from marshmallow import Schema, fields, validates, ValidationError, validate
 
 
 class UserSchema(Schema):
-    id = fields.Int(dump_only=True)
+    handle = fields.UUID(dump_only=True)
     email = fields.Str(required=True, validate=validate.Email())
     first_name = fields.Str(required=True, data_key="firstName")
     last_name = fields.Str(required=True, data_key="lastName")

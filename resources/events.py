@@ -12,17 +12,16 @@ from db import db
 class EventsApi(Resource):
     @jwt_required
     def get(self):
-        user_id = get_jwt_identity()
-        events = (
-            db.session.query(EventModel).filter(EventModel.user_id == user_id).all()
-        )
-        response = EventSchema(many=True).dump(events)
+        user_handle = get_jwt_identity()
+        user = get_user_or_404(user_handle)
+        response = EventSchema(many=True).dump(user.events)
         return response
 
     @jwt_required
     def post(self):
-        user_id = get_jwt_identity()
-        user = get_user_or_404(user_id)
+        user_handle = get_jwt_identity()
+        user = get_user_or_404(user_handle)
+
         try:
             event_data = EventSchema().load(request.get_json())
         except ValidationError as e:
