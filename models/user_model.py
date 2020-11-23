@@ -23,6 +23,7 @@ class UserModel(db.Model):
         db.DateTime, default=datetime.now(), onupdate=datetime.now()
     )
     password = db.Column(db.String(128), nullable=False)
+    is_admin = db.Column(db.Boolean(), default=False)
 
     events = db.relationship("EventModel", backref="users", lazy=True)
 
@@ -33,6 +34,6 @@ class UserModel(db.Model):
         return check_password_hash(self.password, password)
 
     def __repr__(self):
-        return "<User: id={}, email={}, date_created={}>".format(
-            self.id, self.email, self.date_created
+        return "<User: id={}, email={}, handle={}>".format(
+            self.id, self.email, self.handle
         )

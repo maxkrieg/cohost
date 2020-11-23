@@ -7,6 +7,7 @@ class UserSchema(Schema):
     first_name = fields.Str(required=True, data_key="firstName")
     last_name = fields.Str(required=True, data_key="lastName")
     password = fields.Str(required=True, load_only=True)
+    is_admin = fields.Bool(dump_only=True, data_key="isAdmin")
 
     @validates("password")
     def validate_password(self, password):
