@@ -5,6 +5,7 @@ from marshmallow import ValidationError
 from db import db
 from models.user_model import UserModel
 from schema.user_schema import UserSchema
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 
 class SignupApi(Resource):
@@ -19,9 +20,26 @@ class SignupApi(Resource):
                 errors=e.messages,
             )
 
+        existing_user = (
+            db.session.query(UserModel)
+            .filter(UserModel.email == user_data["email"])
+            .first()
+        )
+        if existing_user is not None:
+            abort(
+                400, message="User account with this email already exists", status=400
+            )
+
         new_user = UserModel(**user_data)
         new_user.hash_password()
+
         db.session.add(new_user)
-        db.session.commit()
+
+        try:
+            db.session.commit()
+        except SQLAlchemyError as e:
+            print(e)
+            abort(500, message="Error creating new user", status=500)
+
         response = UserSchema().dump(new_user)
         return response

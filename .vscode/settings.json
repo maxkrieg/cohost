@@ -3,5 +3,5 @@
   "python.linting.pylintEnabled": false,
   "python.linting.enabled": true,
   "python.formatting.provider": "black",
-  "python.pythonPath": "/Users/maxkrieg/projects/cohost/cohost-venv/bin/python3"
+  "python.pythonPath": "/Users/maxkrieg/.pyenv/shims/python"
 }
