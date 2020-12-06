@@ -5,7 +5,7 @@ from marshmallow import ValidationError
 from db import db
 from models.user_model import UserModel
 from schema.user_schema import UserSchema
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError
 
 
 class SignupApi(Resource):

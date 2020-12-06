@@ -1,7 +1,7 @@
 import datetime
 from flask import request
 from flask_restful import Resource, abort
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_optional, get_jwt_identity
 from werkzeug.exceptions import Unauthorized
 from sqlalchemy.orm.exc import NoResultFound
 from marshmallow import ValidationError
@@ -13,7 +13,12 @@ from resources.errors import InternalServerError
 
 
 class LoginApi(Resource):
+    @jwt_optional
     def post(self):
+        logged_in_user_handle = get_jwt_identity()
+        if logged_in_user_handle:
+            return {"handle": logged_in_user_handle}, 200
+
         try:
             login_data = UserSchema().load(request.get_json(), partial=True)
         except ValidationError as e:
