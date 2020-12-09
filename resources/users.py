@@ -7,7 +7,7 @@ from .auth.decorators import admin_required
 from db import db
 
 
-class UsersApi(Resource):
+class Users(Resource):
     method_decorators = [admin_required]
 
     def get(self):
@@ -16,7 +16,7 @@ class UsersApi(Resource):
         return response
 
 
-class UserApi(Resource):
+class User(Resource):
     method_decorators = [admin_required]
 
     def get(self, user, user_handle):

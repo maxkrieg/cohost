@@ -1,5 +1,5 @@
+from flask import request, current_app as app
 from flask_restful import Resource, abort
-from flask import request
 from marshmallow import ValidationError
 
 from models.event_model import EventModel
@@ -8,7 +8,7 @@ from .auth.decorators import user_required
 from db import db
 
 
-class EventsApi(Resource):
+class Events(Resource):
     method_decorators = [user_required]
 
     def get(self, user):
@@ -19,6 +19,7 @@ class EventsApi(Resource):
         try:
             event_data = EventSchema().load(request.get_json())
         except ValidationError as e:
+            app.logger.error(e)
             abort(
                 400,
                 message="Error validating event data",
