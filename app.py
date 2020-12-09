@@ -15,8 +15,8 @@ def create_app():
     app.config.from_envvar("ENV_FILE_LOCATION")
     Bcrypt(app)
     JWTManager(app)
-    CORS(app)
     initialize_routes(app)
+    CORS(app, supports_credentials=True)
 
     db.init_app(app)
 

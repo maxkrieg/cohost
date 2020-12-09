@@ -9,8 +9,8 @@ from .errors import errors
 
 def initialize_routes(app):
     api = Api(app, errors=errors)
-    app.register_blueprint(login_api, url_prefix="/login")
-    api.add_resource(Signup, "/signup")
+    app.register_blueprint(login_api, url_prefix="/auth/login")
+    api.add_resource(Signup, "/auth/signup")
     api.add_resource(Users, "/api/admin/users")
     api.add_resource(User, "/api/admin/users/<string:user_handle>")
     api.add_resource(Events, "/api/events")

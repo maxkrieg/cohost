@@ -25,8 +25,9 @@ login_api = Blueprint("login_api", __name__)
 @jwt_optional
 def login():
     logged_in_user_handle = get_jwt_identity()
+    app.logger.info("Got logged in user handle: {}".format(logged_in_user_handle))
     if logged_in_user_handle:
-        return {"handle": logged_in_user_handle}, 200
+        return jsonify(login=True), 200
 
     try:
         login_data = UserSchema().load(request.get_json(), partial=True)
