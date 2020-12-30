@@ -1,6 +1,7 @@
 import urllib
 from flask_restful import Api
-from .users import Users, User
+from .users import User
+from .users_admin import UsersAdmin, UserAdmin
 from .events import Events
 from .signup import Signup
 from .login import login_api
@@ -11,8 +12,9 @@ def initialize_routes(app):
     api = Api(app, errors=errors)
     app.register_blueprint(login_api, url_prefix="/auth/login")
     api.add_resource(Signup, "/auth/signup")
-    api.add_resource(Users, "/api/admin/users")
-    api.add_resource(User, "/api/admin/users/<string:user_handle>")
+    api.add_resource(User, "/api/user")
+    api.add_resource(UsersAdmin, "/api/admin/users")
+    api.add_resource(UserAdmin, "/api/admin/users/<string:user_handle>")
     api.add_resource(Events, "/api/events")
     log_routes(app)
 
