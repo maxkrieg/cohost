@@ -8,6 +8,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
     set_access_cookies,
     set_refresh_cookies,
+    unset_jwt_cookies,
 )
 from werkzeug.exceptions import Unauthorized
 from sqlalchemy.orm.exc import NoResultFound
@@ -21,7 +22,7 @@ from resources.errors import InternalServerError
 login_api = Blueprint("login_api", __name__)
 
 
-@login_api.route("", methods=["POST"])
+@login_api.route("/login", methods=["POST"])
 @jwt_optional
 def login():
     logged_in_user_handle = get_jwt_identity()
@@ -79,3 +80,10 @@ def login():
     set_access_cookies(response, access_token)
     set_refresh_cookies(response, refresh_token)
     return response, 200
+
+
+@login_api.route("/logout", methods=["POST"])
+def logout():
+    resp = jsonify(logout=True)
+    unset_jwt_cookies(resp)
+    return resp, 200

@@ -10,7 +10,7 @@ from .errors import errors
 
 def initialize_routes(app):
     api = Api(app, errors=errors)
-    app.register_blueprint(login_api, url_prefix="/auth/login")
+    app.register_blueprint(login_api, url_prefix="/auth")
     api.add_resource(Signup, "/auth/signup")
     api.add_resource(User, "/api/user")
     api.add_resource(UsersAdmin, "/api/admin/users")
