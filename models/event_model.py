@@ -7,8 +7,9 @@ class EventModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
     address = db.Column(db.String(200))
-    timestamp = db.Column(db.DateTime, nullable=False)
-    google_maps_place_id = db.Column(db.String())
+    start_date = db.Column(db.DateTime, nullable=False)
+    end_date = db.Column(db.DateTime)
+    place_id = db.Column(db.String())
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now())
     modified_at = db.Column(
         db.DateTime, default=datetime.now(), onupdate=datetime.now()

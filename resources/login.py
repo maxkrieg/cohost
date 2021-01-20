@@ -26,8 +26,8 @@ login_api = Blueprint("login_api", __name__)
 @jwt_optional
 def login():
     logged_in_user_handle = get_jwt_identity()
-    app.logger.info("Got logged in user handle: {}".format(logged_in_user_handle))
     if logged_in_user_handle:
+        app.logger.info("Got logged in user handle: {}".format(logged_in_user_handle))
         return jsonify(login=True), 200
 
     try:
@@ -40,12 +40,15 @@ def login():
             errors=e.messages,
         )
 
+    app.logger.info("Validated login payload")
+
     try:
         user = (
             db.session.query(UserModel)
             .filter(UserModel.email == login_data["email"])
             .one()
         )
+        app.logger.info("Found user for login {}".format(user))
         authorized = user.check_password(login_data["password"])
         if not authorized:
             raise Unauthorized("Invalid password")
@@ -60,6 +63,7 @@ def login():
     except Exception:
         raise InternalServerError
 
+    app.logger.info("Generating JWT token for user")
     token_identity = str(user.handle)
     access_token_exp = datetime.timedelta(days=app.config["JWT_ACCESS_TOKEN_EXP_DAYS"])
     refresh_token_exp = datetime.timedelta(
@@ -67,6 +71,7 @@ def login():
     )
 
     # Create the tokens we will be sending back to the user
+    app.logger.info("Generating access and refresh tokens")
     access_token = create_access_token(
         identity=token_identity, expires_delta=access_token_exp
     )
