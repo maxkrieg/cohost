@@ -15,7 +15,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from marshmallow import ValidationError
 
 from db import db
-from models.user_model import UserModel
+from models.user import User
 from schema.user_schema import UserSchema
 from resources.errors import InternalServerError
 
@@ -43,11 +43,7 @@ def login():
     app.logger.info("Validated login payload")
 
     try:
-        user = (
-            db.session.query(UserModel)
-            .filter(UserModel.email == login_data["email"])
-            .one()
-        )
+        user = db.session.query(User).filter(User.email == login_data["email"]).one()
         app.logger.info("Found user for login {}".format(user))
         authorized = user.check_password(login_data["password"])
         if not authorized:

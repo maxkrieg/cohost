@@ -3,7 +3,7 @@ from flask_restful import Resource, abort
 from marshmallow import ValidationError
 
 from db import db
-from models.user_model import UserModel
+from models.user import User
 from schema.user_schema import UserSchema
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -22,16 +22,14 @@ class Signup(Resource):
             )
 
         existing_user = (
-            db.session.query(UserModel)
-            .filter(UserModel.email == user_data["email"])
-            .first()
+            db.session.query(User).filter(User.email == user_data["email"]).first()
         )
         if existing_user is not None:
             error_message = "User account with this email already exists"
             app.logger.error(error_message)
             abort(400, message=error_message, status=400)
 
-        new_user = UserModel(**user_data)
+        new_user = User(**user_data)
         new_user.hash_password()
 
         db.session.add(new_user)

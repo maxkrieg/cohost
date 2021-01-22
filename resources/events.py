@@ -2,7 +2,7 @@ from flask import request, current_app as app
 from flask_restful import Resource, abort
 from marshmallow import ValidationError
 
-from models.event_model import EventModel
+from models.event import Event
 from schema.event_schema import EventSchema
 from .auth.decorators import user_required
 from db import db
@@ -27,7 +27,7 @@ class Events(Resource):
                 errors=e.messages,
             )
 
-        new_event = EventModel(**event_data)
+        new_event = Event(**event_data)
         user.events.append(new_event)
         db.session.commit()
 

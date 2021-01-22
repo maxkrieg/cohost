@@ -2,7 +2,7 @@ from db import db
 from datetime import datetime
 
 
-class EventModel(db.Model):
+class Event(db.Model):
     __tablename__ = "events"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
@@ -15,9 +15,7 @@ class EventModel(db.Model):
         db.DateTime, default=datetime.now(), onupdate=datetime.now()
     )
 
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    users = db.relationship("UserEvent", back_populates="event")
 
     def __repr__(self):
-        return "<Event: id={}, title={}, user_id={}>".format(
-            self.id, self.title, self.user_id
-        )
+        return "<Event: id={}, title={}>".format(self.id, self.title)

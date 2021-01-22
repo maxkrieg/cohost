@@ -1,6 +1,6 @@
 from flask_restful import Resource
 
-from models.user_model import UserModel
+from models.user import User
 from schema.user_schema import UserSchema
 from .services.user_service import get_user_or_404
 from .auth.decorators import admin_required
@@ -11,7 +11,7 @@ class UsersAdmin(Resource):
     method_decorators = [admin_required]
 
     def get(self):
-        users = db.session.query(UserModel).all()
+        users = db.session.query(User).all()
         response = UserSchema(many=True).dump(users)
         return response
 

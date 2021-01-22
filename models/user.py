@@ -6,8 +6,10 @@ import uuid
 from db import db
 
 
-class UserModel(db.Model):
+class User(db.Model):
+
     __tablename__ = "users"
+
     id = db.Column(db.Integer, primary_key=True)
     handle = db.Column(
         UUID(as_uuid=True),
@@ -25,7 +27,7 @@ class UserModel(db.Model):
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean(), default=False)
 
-    events = db.relationship("EventModel", backref="users", lazy=True)
+    events = db.relationship("UserEvent", back_populates="user")
 
     def hash_password(self):
         self.password = generate_password_hash(self.password).decode("utf8")

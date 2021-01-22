@@ -3,7 +3,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from functools import wraps
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-from models.user_model import UserModel
+from models.user import User
 from db import db
 
 
@@ -14,11 +14,7 @@ def user_required(func):
         user_handle = get_jwt_identity()
 
         try:
-            user = (
-                db.session.query(UserModel)
-                .filter(UserModel.handle == user_handle)
-                .one()
-            )
+            user = db.session.query(User).filter(User.handle == user_handle).one()
         except NoResultFound as e:
             print("Error getting user {}: {}".format(user_handle, str(e)))
             abort(403, message="Unauthorized")
@@ -36,9 +32,9 @@ def admin_required(func):
 
         try:
             user = (
-                db.session.query(UserModel)
-                .filter(UserModel.handle == user_handle)
-                .filter(UserModel.is_admin == True)
+                db.session.query(User)
+                .filter(User.handle == user_handle)
+                .filter(User.is_admin == True)
                 .one()
             )
         except NoResultFound as e:
