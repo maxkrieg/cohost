@@ -25,6 +25,8 @@ class UserEvent(db.Model):
     user = db.relationship("User", back_populates="events")
     event = db.relationship("Event", back_populates="users")
 
+    user_event_items = db.relationship("UserEventItem", back_populates="user_event")
+
     UniqueConstraint(user_id, event_id, name="user_events_user_id_event_id_key")
 
     def __repr__(self):
