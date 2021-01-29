@@ -1,6 +1,11 @@
 from marshmallow import Schema, fields
 
 
+class EventItemSchema(Schema):
+    title = fields.Str(required=True)
+    quantity = fields.Integer(default=1)
+
+
 class EventSchema(Schema):
     title = fields.Str(required=True)
     address = fields.Str()

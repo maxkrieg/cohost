@@ -3,7 +3,8 @@ from flask_restful import Resource, abort
 from marshmallow import ValidationError
 
 from models.event import Event
-from schema.event_schema import EventSchema
+from models.user_event import UserEvent
+from schema.event_schema import EventSchema, EventItemSchema
 from .auth.decorators import user_required
 from db import db
 
@@ -17,7 +18,10 @@ class Events(Resource):
 
     def post(self, user):
         try:
-            event_data = EventSchema().load(request.get_json())
+            payload = request.get_json()
+            payload_items = payload.pop("items", [])
+            event_data = EventSchema().load(payload)
+            item_data = EventItemSchema(many=True).load(payload_items)
         except ValidationError as e:
             app.logger.error(e)
             abort(
@@ -27,8 +31,9 @@ class Events(Resource):
                 errors=e.messages,
             )
 
-        new_event = Event(**event_data)
-        user.events.append(new_event)
+        event = Event(**event_data)
+        user_event = UserEvent(user=user, event=event, user_type=UserEvent.HOST)
+        user_event.user_event_items.append(item_data)
         db.session.commit()
 
         response = EventSchema(many=True).dump(user.events)
