@@ -1,11 +1,11 @@
 import urllib
 from flask_restful import Api
-from .users import User
-from .users_admin import UsersAdmin, UserAdmin
-from .events import Events
-from .signup import Signup
-from .login import login_api
-from .errors import errors
+from resources.users import User
+from resources.users_admin import UsersAdmin, UserAdmin
+from resources.events import Events
+from resources.signup import Signup
+from resources.login import login_api
+from resources.errors import errors
 
 
 def initialize_routes(app):
@@ -16,11 +16,9 @@ def initialize_routes(app):
     api.add_resource(UsersAdmin, "/api/admin/users")
     api.add_resource(UserAdmin, "/api/admin/users/<string:user_handle>")
     api.add_resource(Events, "/api/events")
-    log_routes(app)
 
 
 def log_routes(app):
-    app.logger.info("Info statement")
     print("-----------------------------------")
     print("ROUTES")
     print("-----------------------------------")

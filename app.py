@@ -4,7 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from logger_config import logger_config
-from resources.routes import initialize_routes
+from routes import initialize_routes, log_routes
 from db import db
 
 dictConfig(logger_config)
@@ -16,6 +16,7 @@ def create_app():
     Bcrypt(app)
     JWTManager(app)
     initialize_routes(app)
+    log_routes(app)
     CORS(app, supports_credentials=True)
 
     db.init_app(app)
