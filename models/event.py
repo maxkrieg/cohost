@@ -15,8 +15,8 @@ class Event(db.Model):
         db.DateTime, default=datetime.now(), onupdate=datetime.now()
     )
 
-    users = db.relationship("UserEvent", back_populates="event")
-    items = db.relationship("UserEventItem", back_populates="event")
+    users = db.relationship("EventUser", back_populates="event")
+    items = db.relationship("Item", back_populates="event")
 
     def __repr__(self):
         return "<Event: id={}, title={}>".format(self.id, self.title)

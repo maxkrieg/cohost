@@ -3,8 +3,10 @@ from flask_restful import Resource, abort
 from marshmallow import ValidationError
 
 from models.event import Event
-from models.user_event import UserEvent
-from schema.event_schema import EventSchema, EventItemSchema
+from models.event_user import EventUser
+from models.item import Item
+from schema.event_schema import EventSchema
+from schema.item_schema import ItemSchema
 from .auth.decorators import user_required
 from db import db
 
@@ -21,7 +23,7 @@ class Events(Resource):
             payload = request.get_json()
             payload_items = payload.pop("items", [])
             event_data = EventSchema().load(payload)
-            item_data = EventItemSchema(many=True).load(payload_items)
+            item_data = ItemSchema(many=True).load(payload_items)
         except ValidationError as e:
             app.logger.error(e)
             abort(
@@ -32,7 +34,10 @@ class Events(Resource):
             )
 
         event = Event(**event_data)
-        user_event = UserEvent(user=user, event=event, user_type=UserEvent.HOST)
+        user_event = EventUser(user=user, event=event, user_type=EventUser.HOST)
+        for item in item_data:
+            Item(**item)
+
         user_event.user_event_items.append(item_data)
         db.session.commit()
 

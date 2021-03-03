@@ -27,8 +27,8 @@ class User(db.Model):
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean(), default=False)
 
-    events = db.relationship("UserEvent", back_populates="user")
-    items = db.relationship("User", back_populates="user")
+    events = db.relationship("EventUser", back_populates="user")
+    items = db.relationship("Item", back_populates="user")
 
     def hash_password(self):
         self.password = generate_password_hash(self.password).decode("utf8")
